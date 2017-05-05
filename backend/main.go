@@ -34,6 +34,7 @@ func main() {
 	ws := grpcweb.WrapServer(gs)
 
 	mux := http.NewServeMux()
+	mux.Handle("/frontend/", http.StripPrefix("/frontend/", http.FileServer(http.Dir("./frontend"))))
 	mux.Handle("/", http.HandlerFunc(ws.ServeHttp))
 	hs := &http.Server{
 		Addr:    addr,
@@ -41,5 +42,6 @@ func main() {
 	}
 
 	log.Println("Starting server on", hs.Addr)
+	log.Println("Please access https://localhost:9090/frontend/")
 	log.Println(hs.ListenAndServeTLS("./certs/cert.pem", "./certs/key.pem"))
 }
