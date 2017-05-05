@@ -2,8 +2,9 @@ package main
 
 import (
 	"log"
-	"net"
+	"net/http"
 
+	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -30,11 +31,15 @@ func main() {
 	gs := grpc.NewServer(opts...)
 	pb.RegisterEchoServer(gs, &server{})
 
-	l, err := net.Listen("tcp", addr)
-	if err != nil {
-		log.Fatal(err)
+	ws := grpcweb.WrapServer(gs)
+
+	mux := http.NewServeMux()
+	mux.Handle("/", http.HandlerFunc(ws.ServeHttp))
+	hs := &http.Server{
+		Addr:    addr,
+		Handler: mux,
 	}
 
-	log.Println("Starting server on", l.Addr())
-	log.Println(gs.Serve(l))
+	log.Println("Starting server on", hs.Addr)
+	log.Println(hs.ListenAndServeTLS("./certs/cert.pem", "./certs/key.pem"))
 }
