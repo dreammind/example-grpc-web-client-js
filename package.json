@@ -1,0 +1,28 @@
+{
+  "name": "example-grpc-web-client-js",
+  "version": "0.0.1",
+  "scripts": {
+    "generate": "npm run generate:js & npm run generate:go",
+    "generate:js": "protoc --plugin=protoc-gen-js_service=./node_modules/.bin/protoc-gen-js_service --js_out=import_style=commonjs,binary:. --js_service_out=. pb/*.proto",
+    "generate:go": "protoc --go_out=plugins=grpc:. ./pb/*.proto",
+    "certs": "mkdir -p certs && cd certs && go run $GOROOT/src/crypto/tls/generate_cert.go -host localhost",
+    "build": "browserify frontend/index.js -t babelify --outfile frontend/bundle.js",
+    "start": "npm run certs && npm run build && go run ./backend/main.go"
+  },
+  "author": "daisuzu",
+  "license": "MIT",
+  "dependencies": {
+    "@types/google-protobuf": "^3.2.5",
+    "google-protobuf": "^3.2.0",
+    "grpc-web-client": "^0.2.1"
+  },
+  "devDependencies": {
+    "babel-preset-env": "^1.4.0",
+    "babelify": "^7.3.0",
+    "browserify": "^14.3.0",
+    "ts-protoc-gen": "^0.3.0"
+  },
+  "babel": {
+    "presets": ["env"]
+  }
+}
