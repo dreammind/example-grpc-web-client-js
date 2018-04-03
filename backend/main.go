@@ -35,7 +35,7 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.Handle("/frontend/", http.StripPrefix("/frontend/", http.FileServer(http.Dir("./frontend"))))
-	mux.Handle("/", http.HandlerFunc(ws.ServeHttp))
+	mux.Handle("/", http.HandlerFunc(ws.ServeHTTP))
 	hs := &http.Server{
 		Addr:    addr,
 		Handler: mux,

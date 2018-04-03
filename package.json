@@ -5,7 +5,7 @@
     "generate": "npm run generate:js & npm run generate:go",
     "generate:js": "protoc --plugin=protoc-gen-js_service=./node_modules/.bin/protoc-gen-js_service --js_out=import_style=commonjs,binary:. --js_service_out=. pb/*.proto",
     "generate:go": "protoc --go_out=plugins=grpc:. ./pb/*.proto",
-    "certs": "mkdir -p certs && cd certs && go run $GOROOT/src/crypto/tls/generate_cert.go -host localhost",
+    "certs": "mkdir -p certs && cd certs && go run $(go env GOROOT)/src/crypto/tls/generate_cert.go -host localhost",
     "build": "browserify frontend/index.js -t babelify --outfile frontend/bundle.js",
     "start": "npm run certs && npm run build && go run ./backend/main.go"
   },
@@ -23,6 +23,8 @@
     "ts-protoc-gen": "^0.3.0"
   },
   "babel": {
-    "presets": ["env"]
+    "presets": [
+      "env"
+    ]
   }
 }
